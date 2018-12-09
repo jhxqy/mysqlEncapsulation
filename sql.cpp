@@ -37,5 +37,13 @@ namespace SQL{
         mysql_free_result(result);
         return r;
     }
-    
+    bool Sql::update(const std::string& s){
+        int res=mysql_query(&conn,s.c_str());
+        if(res)
+            return false;
+        return true;
+    }
+    Sql::~Sql(){
+        mysql_close(&conn);
+    }
 }
