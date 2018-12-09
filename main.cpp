@@ -8,7 +8,38 @@
 
 #include <iostream>
 #include <mysql.h>
+using namespace std;
 int main(int argc, const char * argv[]) {
-    mysql_init(NULL);
+    MYSQL conn;
+    mysql_init(&conn);
+    int rs;
+    
+    if(mysql_real_connect(&conn,"localhost","jhx","123456","test",0,NULL,CLIENT_FOUND_ROWS)){
+        cout<<"yes"<<endl;
+        rs=mysql_query(&conn,"select * from people");
+        if(rs)
+            cout << "error" << endl;
+        else
+            cout << "OK" << endl;
+        MYSQL_RES *result = mysql_store_result(&conn);
+        long long rowcount = mysql_num_rows(result);
+        cout << rowcount << endl;
+        int fieldcount = mysql_num_fields(result);
+        cout << fieldcount << endl;
+        MYSQL_FIELD *field = NULL;
+        MYSQL_ROW row = NULL;
+        row = mysql_fetch_row(result);
+        while(NULL != row)
+        {
+            for(int i=0; i<fieldcount; i++)
+            {
+                cout << row[i] << "\t\t";
+            }
+            cout << endl;
+            row = mysql_fetch_row(result);
+        }
+        mysql_close(&conn);
+    }else
+        cout<<"no"<<endl;
     return 0;
 }
